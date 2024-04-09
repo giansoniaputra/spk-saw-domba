@@ -13,9 +13,12 @@
             <div class="card-body">
                 <table id="table-alternatif" class="table table-bordered table-hover dataTable dtr-inline">
                     <thead>
-                        <th>Kode</th>
                         <th>Alternatif</th>
-                        <th>Keterangan</th>
+                        <th>No Tanding</th>
+                        <th>Nama Domba</th>
+                        <th>Pemilik</th>
+                        <th>Daerah</th>
+                        <th>Kelas</th>
                         <th>Action</th>
                     </thead>
                     <tbody>

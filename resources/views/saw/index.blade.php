@@ -74,5 +74,6 @@
 </div>
 <div id="normalisasi"></div>
 <div id="ranking"></div>
+<div id="juara"></div>
 <script src="/ex-script/saw.js"></script>
 @endsection

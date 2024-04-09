@@ -24,11 +24,19 @@ class AlternatifController extends Controller
         $rules = [
             'alternatif' => 'required|unique:alternatifs',
             'keterangan' => 'required',
+            'no_tanding' => 'required',
+            'pemilik' => 'required',
+            'daerah' => 'required',
+            'kelas' => 'required',
         ];
         $pesan = [
             'alternatif.required' => 'Alternatif tidak boleh kosong!',
             'alternatif.unique' => 'Alternatif sudah ada!',
             'keterangan.required' => 'Ketarangan tidak boleh kosong!',
+            'no_tanding.required' => 'No tanding tidak boleh kosong!',
+            'pemilik.required' => 'Pemilik tidak boleh kosong!',
+            'daerah.required' => 'Daerah tidak boleh kosong!',
+            'kelas.required' => 'Kelas tidak boleh kosong!',
         ];
         $validator = Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()) {
@@ -37,7 +45,11 @@ class AlternatifController extends Controller
             $data = [
                 'uuid' => Str::orderedUuid(),
                 'alternatif' => $request->alternatif,
+                'no_tanding' => $request->no_tanding,
                 'keterangan' => $request->keterangan,
+                'pemilik' => $request->pemilik,
+                'daerah' => $request->daerah,
+                'kelas' => $request->kelas,
             ];
             Alternatif::create($data);
             return response()->json(['success' => 'Alternatif Berhasi Di Buat!']);
@@ -52,12 +64,18 @@ class AlternatifController extends Controller
     public function update(Alternatif $alternatif, Request $request)
     {
         $rules = [
-            'alternatif' => 'required',
             'keterangan' => 'required',
+            'no_tanding' => 'required',
+            'pemilik' => 'required',
+            'daerah' => 'required',
+            'kelas' => 'required',
         ];
         $pesan = [
-            'alternatif.required' => 'Alternatif tidak boleh kosong!',
             'keterangan.required' => 'Ketarangan tidak boleh kosong!',
+            'no_tanding.required' => 'No tanding tidak boleh kosong!',
+            'pemilik.required' => 'Pemilik tidak boleh kosong!',
+            'daerah.required' => 'Daerah tidak boleh kosong!',
+            'kelas.required' => 'Kelas tidak boleh kosong!',
         ];
         $cek = Alternatif::where('uuid', $request->uuid)->first();
         if ($cek->alternatif == $request->alternatif) {
@@ -74,7 +92,11 @@ class AlternatifController extends Controller
         } else {
             $data = [
                 'alternatif' => $request->alternatif,
+                'no_tanding' => $request->no_tanding,
                 'keterangan' => $request->keterangan,
+                'pemilik' => $request->pemilik,
+                'daerah' => $request->daerah,
+                'kelas' => $request->kelas,
             ];
             Alternatif::where('uuid', $alternatif->uuid)->update($data);
             return response()->json(['success' => 'Alternatif Berhasi Di Ubah!']);

@@ -9,19 +9,22 @@ $(document).ready(function () {
         },
         columns: [
             {
-                data: null,
-                orderable: false,
-                render: function (data, type, row, meta) {
-                    var pageInfo = $("#table-alternatif").DataTable().page.info();
-                    var index = meta.row + pageInfo.start + 1;
-                    return index;
-                },
-            },
-            {
                 data: "alternatif",
             },
             {
+                data: "no_tanding",
+            },
+            {
                 data: "keterangan",
+            },
+            {
+                data: "pemilik",
+            },
+            {
+                data: "daerah",
+            },
+            {
+                data: "kelas",
             },
             {
                 data: "action",
@@ -51,6 +54,8 @@ $(document).ready(function () {
     })
 
     $("#modal-alternatif").on("click", "#btn-save", function () {
+        let button = $(this)
+        $(button).attr("disabled", "true");
         let form = $("form[id='form-alternatif']").serialize();
         $.ajax({
             data: form,
@@ -59,11 +64,12 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.errors) {
+                    $(button).removeAttr("disabled");
                     displayErrors(response.errors);
                 } else {
+                    $(button).removeAttr("disabled");
                     table.ajax.reload()
-                    $("#alternatif").val("")
-                    $("#keterangan").val("")
+                    reset();
                     $("#modal-alternatif").modal("hide");
                     Swal.fire("Success!", response.success, "success");
                 }
@@ -73,26 +79,31 @@ $(document).ready(function () {
     })
 
     $("#btn-close").on("click", function () {
-        $("#alternatif").val("")
-        $("#keterangan").val("")
-        $("#current_uuid").val("")
+        reset();
         $("#modal-alternatif").modal("hide");
     })
 
     $("#table-alternatif").on("click", ".edit-button", function () {
         let uuid = $(this).data("uuid");
+        let button = $(this)
+        $(button).attr("disabled", "true");
         $("#current_uuid").val(uuid)
         $.ajax({
             url: "/alternatif-edit/" + uuid,
             type: "GET",
             dataType: 'json',
             success: function (response) {
+                $(button).removeAttr("disabled");
                 $("#modal-title").html("Ubah Data Alternatif")
                 $("#btn-action").html(`
                     <button class="btn btn-primary" id="btn-update">Ubah</button>
                 `)
                 $("#alternatif").val(response.data.alternatif)
+                $("#no_tanding").val(response.data.no_tanding)
                 $("#keterangan").val(response.data.keterangan)
+                $("#pemilik").val(response.data.pemilik)
+                $("#daerah").val(response.data.daerah)
+                $("#kelas").val(response.data.kelas)
                 $("#modal-alternatif").modal("show");
             }
         });
@@ -100,6 +111,8 @@ $(document).ready(function () {
 
     $("#modal-alternatif").on("click", "#btn-update", function () {
         let form = $("form[id='form-alternatif']").serialize();
+        let button = $(this)
+        $(button).attr("disabled", "true");
         $.ajax({
             data: form,
             url: "/alternatif-update/" + $("#current_uuid").val(),
@@ -107,12 +120,12 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.errors) {
+                    $(button).removeAttr("disabled");
                     displayErrors(response.errors);
                 } else {
                     table.ajax.reload()
-                    $("#alternatif").val("")
-                    $("#keterangan").val("")
-                    $("#current_uuid").val("")
+                    $(button).removeAttr("disabled");
+                    reset();
                     $("#modal-alternatif").modal("hide");
                     Swal.fire("Success!", response.success, "success");
                 }
@@ -148,6 +161,16 @@ $(document).ready(function () {
             }
         });
     });
+
+    //KOSONGKAN SEMUA INPUTAN
+    function reset() {
+        let form = $("form[id='form-alternatif']").serializeArray();
+        form.map((a) => {
+            $(`#${a.name}`).val("");
+        })
+        $("#btn-action").html("")
+        $("#modal-title").html("")
+    }
     //Hendler Error
     function displayErrors(errors) {
         // menghapus class 'is-invalid' dan pesan error sebelumnya
