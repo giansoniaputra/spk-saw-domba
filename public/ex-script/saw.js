@@ -71,6 +71,7 @@ $(document).ready(function () {
                 let juaraElement = document.querySelector('#juara')
                 let normalisasiElement = document.querySelector('#normalisasi');
                 let keys = Object.keys(data.perhitungan)
+                // Menampilkan data normalisasi untuk di load ke halaman
                 let normalisasi = `
                 <div class="row mt-3">
                     <div class="col-sm-12">

@@ -146,7 +146,7 @@ class PerhitunganController extends Controller
                     foreach ($bobots as $bobot) {
                         // $max = SubKriteria::where('kriteria_uuid', $kriteria->uuid)->orderBy('bobot', 'desc')->first();
                         // $bobot_kriteria = round($bobot->bobot / $max->bobot, 3);
-                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 6);
+                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 3);
                         $elements .= "<td class=\"text-center\" id=\"nilai-bobot\">
                         <p class=\"p-bobot\">" . $bobot_kriteria . "</p>
                         <form action=\"javascript:;\" id=\"form-update-bobot\">
@@ -160,7 +160,7 @@ class PerhitunganController extends Controller
                         $sum_kriteria = DB::table('perhitungans')
                             ->where('kriteria_uuid', $kriteria->uuid)
                             ->min('bobot');
-                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 6);
+                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 3);
                         $elements .= "<td class=\"text-center\" id=\"nilai-bobot\">
                         <p class=\"p-bobot\">" . $bobot_kriteria . "</p>
                         <form action=\"javascript:;\" id=\"form-update-bobot\">
