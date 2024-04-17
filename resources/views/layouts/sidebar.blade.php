@@ -51,7 +51,8 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Pengambilan Keputusan</h6>
-                <a class="collapse-item" href="/saw">SAW</a>
+                <?= getKelas(); ?>
+                <a class="collapse-item" href="/saw/favorit">Perhitungan Kelas Favorit</a>
             </div>
         </div>
     </li>

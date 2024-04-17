@@ -64,4 +64,4 @@ Route::get('/perhitungan-create', [PerhitunganController::class, 'create'])->mid
 Route::get('/perhitungan-update/{perhitungan:uuid}', [PerhitunganController::class, 'update'])->middleware('auth');
 Route::get('/saw-normalisasi', [PerhitunganController::class, 'normalisasi'])->middleware('auth');
 Route::get('/saw-preferensi', [PerhitunganController::class, 'preferensi'])->middleware('auth');
-Route::get('/saw', [PerhitunganController::class, 'index_saw'])->middleware('auth');
+Route::get('/saw/{kelas}', [PerhitunganController::class, 'index_saw'])->middleware('auth');

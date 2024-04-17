@@ -27,16 +27,17 @@ class PerhitunganController extends Controller
         return view('moora.index', $data);
     }
 
-    public function index_saw()
+    public function index_saw($kelas)
     {
         $data = [
-            'title' => 'Perhitungan SAW',
+            'title' => "Perhitungan Kelas $kelas",
             'perhitungan' => DB::table('perhitungans as a')
                 ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                 ->select('a.*', 'b.alternatif', 'b.keterangan')
+                ->where('b.kelas', $kelas)
                 ->orderBy('b.alternatif', 'asc'),
             'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
-            'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->get(),
+            'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
             'sum_kriteria' => Kriteria::count('id'),
         ];
         return view('saw.index', $data);
