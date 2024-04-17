@@ -52,7 +52,6 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Pengambilan Keputusan</h6>
                 <?= getKelas(); ?>
-                <a class="collapse-item" href="/saw/favorit">Perhitungan Kelas Favorit</a>
             </div>
         </div>
     </li>

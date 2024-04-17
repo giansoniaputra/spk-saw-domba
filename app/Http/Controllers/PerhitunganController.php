@@ -27,19 +27,37 @@ class PerhitunganController extends Controller
         return view('moora.index', $data);
     }
 
-    public function index_saw($kelas)
+    public function index_saw(Request $request, $kelas)
     {
-        $data = [
-            'title' => "Perhitungan Kelas $kelas",
-            'perhitungan' => DB::table('perhitungans as a')
-                ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
-                ->select('a.*', 'b.alternatif', 'b.keterangan')
-                ->where('b.kelas', $kelas)
-                ->orderBy('b.alternatif', 'asc'),
-            'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
-            'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
-            'sum_kriteria' => Kriteria::count('id'),
-        ];
+        if ($kelas == 'favorit') {
+            $data = [
+                'title' => "Perhitungan Kelas $kelas",
+                'perhitungan' => DB::table('perhitungans as a')
+                    ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
+                    ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->where('b.kelas', $request->kelas)
+                    ->where('a.is_favorit', 1)
+                    ->orderBy('b.alternatif', 'asc'),
+                'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
+                'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
+                'sum_kriteria' => Kriteria::where('is_favorit', 1)->count('id'),
+                'kelas' => $kelas,
+            ];
+        } else {
+            $data = [
+                'title' => "Perhitungan Kelas $kelas",
+                'perhitungan' => DB::table('perhitungans as a')
+                    ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
+                    ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->where('b.kelas', $kelas)
+                    ->where('a.is_favorit', 0)
+                    ->orderBy('b.alternatif', 'asc'),
+                'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
+                'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
+                'sum_kriteria' => Kriteria::count('id'),
+                'kelas' => $kelas,
+            ];
+        }
         return view('saw.index', $data);
     }
     public function index_waspas()
@@ -57,7 +75,7 @@ class PerhitunganController extends Controller
         return view('waspas.index', $data);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $cek = Perhitungan::first();
         if (!$cek) {
@@ -69,15 +87,30 @@ class PerhitunganController extends Controller
                         'uuid' => Str::orderedUuid(),
                         'alternatif_uuid' => $alternatif->uuid,
                         'kriteria_uuid' => $kriteria->uuid,
-                        'bobot' => 0
+                        'bobot' => 0,
+                        'is_favorit' => 0
                     ];
+                    if ($kriteria->is_favorit == 1) {
+                        $data2 = [
+                            'uuid' => Str::orderedUuid(),
+                            'alternatif_uuid' => $alternatif->uuid,
+                            'kriteria_uuid' => $kriteria->uuid,
+                            'bobot' => 0,
+                            'is_favorit' => 1
+                        ];
+                        Perhitungan::create($data2);
+                    }
                     Perhitungan::create($data);
                 }
             }
-            return response()->json(['success' => 'Perhitungan Baru Berhasil Ditambahkan! Silahkan Masukan Nilainya']);
+            if ($request->kelas) {
+                return response()->json(['success' => 'Perhitungan Baru Berhasil Ditambahkan! Silahkan Masukan Nilainya']);
+            } else {
+                return redirect('/');
+            }
         } else {
             $kriterias = Kriteria::orderBy('kode', 'asc')->get();
-            $alternatifs = Alternatif::orderBy('alternatif', 'asc')->get();
+            $alternatifs = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get();
             foreach ($alternatifs as $alternatif) {
                 $query = Perhitungan::where('alternatif_uuid', $alternatif->uuid)->first();
                 if (!$query) {
@@ -106,7 +139,11 @@ class PerhitunganController extends Controller
                     }
                 }
             }
-            return response()->json(['success' => 'Perhitungan Baru Berhasil Ditambahkan! Silahkan Masukan Nilainya']);
+            if ($request->kelas) {
+                return response()->json(['success' => 'Perhitungan Baru Berhasil Ditambahkan! Silahkan Masukan Nilainya']);
+            } else {
+                return redirect('/');
+            }
         }
     }
 
@@ -116,19 +153,32 @@ class PerhitunganController extends Controller
         return response()->json(['success' => $request->bobot]);
     }
 
-    public function normalisasi()
+    public function normalisasi(Request $request, $kelas)
     {
         //Inisialisasi Normalisasi
-        $data = [
-            'title' => 'Normalisasi',
-            'perhitungan' => DB::table('perhitungans as a')
-                ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
-                ->select('a.*', 'b.alternatif', 'b.keterangan')
-                ->orderBy('b.alternatif', 'asc'),
-            'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
-            'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->get(),
-            'sum_kriteria' => Kriteria::count('id'),
-        ];
+        if ($kelas == 'favorit') {
+            $data = [
+                'title' => 'Normalisasi',
+                'perhitungan' => DB::table('perhitungans as a')
+                    ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
+                    ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->orderBy('b.alternatif', 'asc'),
+                'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
+                'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
+                'sum_kriteria' => Kriteria::count('id'),
+            ];
+        } else {
+            $data = [
+                'title' => 'Normalisasi',
+                'perhitungan' => DB::table('perhitungans as a')
+                    ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
+                    ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->orderBy('b.alternatif', 'asc'),
+                'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
+                'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
+                'sum_kriteria' => Kriteria::count('id'),
+            ];
+        }
         $elements = '';
         $array_bobot = [];
         foreach ($data['alternatifs'] as $alternatif) {

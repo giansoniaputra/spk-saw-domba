@@ -47,6 +47,8 @@ Route::get('/dataTablesUser', [AuthController::class, 'dataTables'])->middleware
 // KRITERIA
 Route::resource('/kriteria', KriteriaController::class)->middleware('auth');
 Route::get('/dataTablesKriteria', [KriteriaController::class, 'dataTablesKriteria'])->middleware('auth');
+Route::get('/favorit/{uuid}', [KriteriaController::class, 'favorit'])->middleware('auth');
+Route::get('/not-favorit/{uuid}', [KriteriaController::class, 'not_favorit'])->middleware('auth');
 Route::get('/kriteriaEdit/{kreteria:uuid}', [KriteriaController::class, 'edit'])->middleware('auth');
 // SUB KRITERI->middleware('auth')A
 Route::resource('/subKriteria', SubKriteriaController::class)->middleware('auth');
@@ -62,6 +64,7 @@ Route::post('/alternatif-destroy/{alternatif:uuid}', [AlternatifController::clas
 Route::get('/perhitungan', [PerhitunganController::class, 'index'])->middleware('auth');
 Route::get('/perhitungan-create', [PerhitunganController::class, 'create'])->middleware('auth');
 Route::get('/perhitungan-update/{perhitungan:uuid}', [PerhitunganController::class, 'update'])->middleware('auth');
-Route::get('/saw-normalisasi', [PerhitunganController::class, 'normalisasi'])->middleware('auth');
+Route::get('/saw-normalisasi/{kelas}', [PerhitunganController::class, 'normalisasi'])->middleware('auth');
 Route::get('/saw-preferensi', [PerhitunganController::class, 'preferensi'])->middleware('auth');
+Route::get('/saw', [PerhitunganController::class, 'create'])->middleware('auth');
 Route::get('/saw/{kelas}', [PerhitunganController::class, 'index_saw'])->middleware('auth');

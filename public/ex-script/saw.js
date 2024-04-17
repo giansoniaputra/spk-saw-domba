@@ -12,7 +12,7 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $("#spinner").html(loader)
                 $.ajax({
-                    url: "/perhitungan-create",
+                    url: "/perhitungan-create/?kelas=" + $('#kelas').val(),
                     type: "GET",
                     dataType: "json",
                     success: function (response) {
@@ -33,6 +33,7 @@ $(document).ready(function () {
         });
     });
     $("#table-perhitungan").on("click", "#nilai-bobot", function () {
+        let data = $(this)
         let current_input = document.querySelectorAll(".input-bobot")
         current_input.forEach((a) => {
             a.classList.add('d-none')
@@ -41,6 +42,7 @@ $(document).ready(function () {
         $(this).children().eq(0).addClass("d-none")
         $(this).children().eq(1).children().eq(0).removeClass("d-none")
         $(this).children().eq(1).children().eq(0).focus()
+
     })
     $("#table-perhitungan").on("change", ".input-bobot", function () {
         let thiss = $(this)
@@ -62,7 +64,7 @@ $(document).ready(function () {
     $("#btn-normalisasi").on("click", function () {
         $("#spinner").html(loader)
         $.ajax({
-            url: "/saw-normalisasi",
+            url: "/saw-normalisasi/" + $("#kelas").val(),
             type: "GET",
             dataType: 'json',
             success: function (response) {

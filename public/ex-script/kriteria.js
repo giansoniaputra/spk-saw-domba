@@ -21,6 +21,16 @@ $(document).ready(function () {
                 data: "bobot",
             },
             {
+                data: null,
+                render: function (a, b, c) {
+                    if (c.is_favorit == 0) {
+                        return `<span class="btn btn-danger badge">Bukan Favorit</span>`;
+                    } else {
+                        return `<span class="btn btn-success badge">Favorit</span>`;
+                    }
+                }
+            },
+            {
                 data: "action",
                 orderable: true,
                 searchable: true,
@@ -28,7 +38,7 @@ $(document).ready(function () {
         ],
         columnDefs: [
             {
-                targets: [4], // index kolom atau sel yang ingin diatur
+                targets: [4, 5], // index kolom atau sel yang ingin diatur
                 className: "text-center", // kelas CSS untuk memposisikan isi ke tengah
             },
             {
@@ -311,6 +321,29 @@ $(document).ready(function () {
         $("#btn-action-add-sub").html(`<button class="btn btn-primary btn-md" id="btn-add-sub">Tambah Sub Kriteria</button>`)
         $("#sub_kriteria").val("")
         $("#bobot-sub").val("")
+    })
+
+    $("#table-kriteria").on("click", ".check-button", function () {
+        let uuid = $(this).data("uuid");
+        $.ajax({
+            url: "/favorit/" + uuid,
+            type: "GET",
+            dataType: 'json',
+            success: function (response) {
+                table.ajax.reload()
+            }
+        });
+    })
+    $("#table-kriteria").on("click", ".x-button", function () {
+        let uuid = $(this).data("uuid");
+        $.ajax({
+            url: "/not-favorit/" + uuid,
+            type: "GET",
+            dataType: 'json',
+            success: function (response) {
+                table.ajax.reload()
+            }
+        });
     })
     //Hendler Error
     function displayErrors(errors) {

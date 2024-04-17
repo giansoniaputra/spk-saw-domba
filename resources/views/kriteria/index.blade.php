@@ -17,6 +17,7 @@
                         <th>Kriteria</th>
                         <th>Atribut</th>
                         <th>Bobot</th>
+                        <th>Favorit</th>
                         <th>Action</th>
                     </thead>
                     <tbody>

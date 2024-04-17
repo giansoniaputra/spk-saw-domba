@@ -58,6 +58,7 @@ class KriteriaController extends Controller
                 'kriteria' => $request->kriteria,
                 'atribut' => $request->atribut,
                 'bobot' => $request->bobot,
+                'is_favorit' => 0,
             ];
             Kriteria::create($data);
             return response()->json(['success' => 'Kriteria Berhasil Disimpan']);
@@ -131,6 +132,18 @@ class KriteriaController extends Controller
         return response()->json(['success' => 'Data Kriteria Berhasil Dihapus']);
     }
 
+    public function favorit($uuid)
+    {
+        Kriteria::where('uuid', $uuid)->update(['is_favorit' => 1]);
+        return response()->json(['success' => 'suuccess']);
+    }
+
+    public function not_favorit($uuid)
+    {
+        Kriteria::where('uuid', $uuid)->update(['is_favorit' => 0]);
+        return response()->json(['success' => 'suuccess']);
+    }
+
     public function dataTablesKriteria(Request $request)
     {
         $query = Kriteria::all();
@@ -139,10 +152,19 @@ class KriteriaController extends Controller
             $row->kode = 'C' . $row->kode;
         }
         return DataTables::of($query)->addColumn('action', function ($row) {
-            $actionBtn =
-                '
-                <button class="btn btn-rounded btn-sm btn-warning text-dark edit-button" title="Edit Data" data-uuid="' . $row->uuid . '"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-rounded btn-sm btn-danger text-white delete-button" title="Hapus Data" data-uuid="' . $row->uuid . '" data-token="' . csrf_token() . '"><i class="fas fa-trash-alt"></i></button>';
+            if ($row->is_favorit == 0) {
+                $actionBtn =
+                    '
+                    <button class="btn btn-rounded btn-sm btn-success text-light check-button" title="Edit Data" data-uuid="' . $row->uuid . '"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-rounded btn-sm btn-warning text-dark edit-button" title="Edit Data" data-uuid="' . $row->uuid . '"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-rounded btn-sm btn-danger text-white delete-button" title="Hapus Data" data-uuid="' . $row->uuid . '" data-token="' . csrf_token() . '"><i class="fas fa-trash-alt"></i></button>';
+            } else {
+                $actionBtn =
+                    '
+                    <button class="btn btn-rounded btn-sm btn-danger text-light x-button" title="Edit Data" data-uuid="' . $row->uuid . '"><i class="fas fa-times-circle"></i></button>
+                    <button class="btn btn-rounded btn-sm btn-warning text-dark edit-button" title="Edit Data" data-uuid="' . $row->uuid . '"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-rounded btn-sm btn-danger text-white delete-button" title="Hapus Data" data-uuid="' . $row->uuid . '" data-token="' . csrf_token() . '"><i class="fas fa-trash-alt"></i></button>';
+            }
             return $actionBtn;
         })->make(true);
     }

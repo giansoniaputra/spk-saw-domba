@@ -5,6 +5,7 @@
         <button type="button" class="btn btn-primary" id="btn-add-perhitungan">Tambah Perhitungan SAW</button>
     </div>
 </div>
+<input type="hidden" id="kelas" value="{{ $kelas }}">
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -36,10 +37,19 @@
                             <td>{{ $alternatif->keterangan }}</td>
                             @foreach($kriterias as $kriteria)
                             @php
+                            if($kelas == 'favorit'){
                             $bobots = DB::table('perhitungans')
                             ->where('kriteria_uuid', $kriteria->uuid)
                             ->where('alternatif_uuid', $alternatif->uuid)
+                            ->where('is_favorit', 1)
                             ->get();
+                            } else {
+                            $bobots = DB::table('perhitungans')
+                            ->where('kriteria_uuid', $kriteria->uuid)
+                            ->where('alternatif_uuid', $alternatif->uuid)
+                            ->where('is_favorit', 0)
+                            ->get();
+                            }
                             @endphp
                             @foreach($bobots as $bobot)
                             <td class="text-center" id="nilai-bobot">
