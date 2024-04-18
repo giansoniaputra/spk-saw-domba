@@ -162,6 +162,7 @@ class PerhitunganController extends Controller
                 'perhitungan' => DB::table('perhitungans as a')
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->where('a.is_favorit', 1)
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
@@ -172,6 +173,7 @@ class PerhitunganController extends Controller
                 'title' => 'Normalisasi',
                 'perhitungan' => DB::table('perhitungans as a')
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
+                    ->where('a.is_favorit', 0)
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
@@ -185,10 +187,19 @@ class PerhitunganController extends Controller
             $elements .= "<tr><td>A$alternatif->alternatif</td>
             <td>$alternatif->keterangan</td>";
             foreach ($data['kriterias'] as $kriteria) {
-                $bobots = DB::table('perhitungans')
-                    ->where('kriteria_uuid', $kriteria->uuid)
-                    ->where('alternatif_uuid', $alternatif->uuid)
-                    ->get();
+                if ($kelas == 'favorit') {
+                    $bobots = DB::table('perhitungans')
+                        ->where('kriteria_uuid', $kriteria->uuid)
+                        ->where('alternatif_uuid', $alternatif->uuid)
+                        ->where('is_favorit', 1)
+                        ->get();
+                } else {
+                    $bobots = DB::table('perhitungans')
+                        ->where('kriteria_uuid', $kriteria->uuid)
+                        ->where('alternatif_uuid', $alternatif->uuid)
+                        ->where('is_favorit', 0)
+                        ->get();
+                }
                 if ($kriteria->atribut == "BENEFIT") {
                     $sum_kriteria = DB::table('perhitungans')
                         ->where('kriteria_uuid', $kriteria->uuid)
@@ -250,7 +261,10 @@ class PerhitunganController extends Controller
         }
 
         //Merangking
-        $nama = Alternatif::orderBy('alternatif', 'asc')->get();
+        // if ($kelas == 'favorit') {
+        // $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get();
+        $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get();
+        // }
         $rangking_assoc = [];
         foreach ($ranking as $index => $nilai) {
             $rangking_assoc[] = [$nama[$index]->keterangan, $nilai, $nama[$index]->alternatif];
