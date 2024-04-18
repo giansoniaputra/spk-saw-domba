@@ -134,16 +134,6 @@ class PerhitunganController extends Controller
                             'is_favorit' => 0
                         ];
                         Perhitungan::create($data);
-                        if ($kriteria->is_favorit == 1) {
-                            $data2 = [
-                                'uuid' => Str::orderedUuid(),
-                                'alternatif_uuid' => $alternatif->uuid,
-                                'kriteria_uuid' => $kriteria->uuid,
-                                'bobot' => 0,
-                                'is_favorit' => 1
-                            ];
-                            Perhitungan::create($data2);
-                        }
                     }
                 }
             }
@@ -158,6 +148,16 @@ class PerhitunganController extends Controller
                             'bobot' => 0
                         ];
                         Perhitungan::create($data);
+                        if ($kriteria->is_favorit == 1) {
+                            $data2 = [
+                                'uuid' => Str::orderedUuid(),
+                                'alternatif_uuid' => $alternatif->uuid,
+                                'kriteria_uuid' => $kriteria->uuid,
+                                'bobot' => 0,
+                                'is_favorit' => 1
+                            ];
+                            Perhitungan::create($data2);
+                        }
                     }
                 }
             }
