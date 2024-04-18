@@ -5,7 +5,10 @@
         <button type="button" class="btn btn-primary" id="btn-add-perhitungan">Tambah Perhitungan SAW</button>
     </div>
 </div>
-<input type="hidden" id="kelas" value="{{ $kelas }}">
+<input type="text" id="kelas" value="{{ $kelas }}">
+@if(isset($rKelas))
+<input type="hidden" id="rKelas" value="{{ $rKelas }}">
+@endif
 <div class="row">
     <div class="col-sm-12">
         <div class="card">

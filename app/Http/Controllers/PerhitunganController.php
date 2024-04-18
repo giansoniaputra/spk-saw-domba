@@ -42,6 +42,7 @@ class PerhitunganController extends Controller
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
                 'sum_kriteria' => Kriteria::where('is_favorit', 1)->count('id'),
                 'kelas' => $kelas,
+                'rKelas' => $request->kelas
             ];
         } else {
             $data = [
@@ -163,18 +164,18 @@ class PerhitunganController extends Controller
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
                     ->where('a.is_favorit', 1)
-                    ->orderBy('b.alternatif', 'asc'),
+                    ->orderBy('b.alternatif', 'asc')->get(),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
-                'sum_kriteria' => Kriteria::count('id'),
+                'sum_kriteria' => Kriteria::where('is_favorit', 1)->count('id'),
             ];
         } else {
             $data = [
                 'title' => 'Normalisasi',
                 'perhitungan' => DB::table('perhitungans as a')
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
-                    ->where('a.is_favorit', 0)
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
+                    ->where('a.is_favorit', 0)
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
@@ -261,10 +262,11 @@ class PerhitunganController extends Controller
         }
 
         //Merangking
-        // if ($kelas == 'favorit') {
-        // $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get();
-        $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get();
-        // }
+        if ($kelas == 'favorit') {
+            $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get();
+        } else {
+            $nama = Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get();
+        }
         $rangking_assoc = [];
         foreach ($ranking as $index => $nilai) {
             $rangking_assoc[] = [$nama[$index]->keterangan, $nilai, $nama[$index]->alternatif];

@@ -63,12 +63,19 @@ $(document).ready(function () {
     // KEPUTUSAN
     $("#btn-normalisasi").on("click", function () {
         $("#spinner").html(loader)
+        let kelas = $("#kelas").val();
+        if (kelas == 'favorit') {
+            var url = "/saw-normalisasi/" + kelas + "?kelas=" + $("#rKelas").val()
+        } else {
+            var url = "/saw-normalisasi/" + kelas
+        }
         $.ajax({
-            url: "/saw-normalisasi/" + $("#kelas").val(),
+            url: url,
             type: "GET",
             dataType: 'json',
             success: function (response) {
                 let data = response.data
+                console.log(data);
                 let rankingElement = document.querySelector('#ranking')
                 let juaraElement = document.querySelector('#juara')
                 let normalisasiElement = document.querySelector('#normalisasi');
