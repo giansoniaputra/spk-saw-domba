@@ -190,7 +190,7 @@ $(document).ready(function () {
                     }
                 }
 
-                juara += `</tbody></table>`
+                juara += `</tbody></table><div class='card-footer'><button onclick=\"window.print()\" class=\"btn btn-primary no-print\">Cetak Laporan</button></div>`
                 juaraElement.innerHTML = juara
                 $("#spinner").html("")
             }

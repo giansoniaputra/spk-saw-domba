@@ -1,8 +1,49 @@
 @extends('layouts.main')
 @section('container')
+<style>
+    .page-title {
+        display: none;
+    }
+
+    #matrix-normalisasi {
+        display: none;
+    }
+
+    /* Tambahkan gaya khusus untuk pencetakan jika diperlukan */
+    @media print {
+        body {
+            padding: 40px;
+        }
+
+        /* Atur gaya untuk elemen-elemen yang ingin dicetak */
+        .no-print {
+            display: none;
+            /* Sembunyikan elemen-elemen yang tidak ingin dicetak */
+        }
+
+        /* Tampilkan judul pada saat mencetak */
+        .page-title {
+            display: block;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            /* Atur jarak dari konten halaman */
+        }
+
+        #matrix-normalisasi {
+            display: block;
+        }
+    }
+
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <h2 class="page-title">Laporan Hasil Perhitungan Kelas {{ $kelas }}</h2>
+    </div>
+</div>
 <div class="row mb-2">
     <div class="col">
-        <button type="button" class="btn btn-primary" id="btn-add-perhitungan">Tambah Perhitungan SAW</button>
+        <button type="button" class="btn btn-primary no-print" id="btn-add-perhitungan">Tambah Perhitungan SAW</button>
     </div>
 </div>
 <input type="text" id="kelas" value="{{ $kelas }}">
@@ -79,7 +120,7 @@
             </div>
             <div class="card-footer">
                 @if($perhitungan->count('a.id') > 0)
-                <button class="btn btn-primary float-right" id="btn-normalisasi">Cari Keputusan</button>
+                <button class="btn btn-primary float-right no-print" id="btn-normalisasi">Cari Keputusan</button>
                 @endif
             </div>
         </div>
