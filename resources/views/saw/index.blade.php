@@ -5,7 +5,7 @@
         <button type="button" class="btn btn-primary" id="btn-add-perhitungan">Tambah Perhitungan SAW</button>
     </div>
 </div>
-<input type="text" id="kelas" value="{{ $kelas }}">
+<input type="hidden" id="kelas" value="{{ $kelas }}">
 @if(isset($rKelas))
 <input type="hidden" id="rKelas" value="{{ $rKelas }}">
 @endif

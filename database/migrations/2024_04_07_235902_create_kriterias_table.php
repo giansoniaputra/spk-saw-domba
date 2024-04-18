@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('kriteria');
             $table->string('atribut');
             $table->float('bobot');
+            $table->integer('is_favorit')->nullable();
             $table->timestamps();
         });
     }
