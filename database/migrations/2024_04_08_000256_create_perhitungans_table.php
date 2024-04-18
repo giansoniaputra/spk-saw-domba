@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('alternatif_uuid');
             $table->string('kriteria_uuid');
             $table->string('bobot');
+            $table->integer('is_favorit')->nullable();
             $table->timestamps();
         });
     }

@@ -116,6 +116,16 @@ class PerhitunganController extends Controller
                 $query = Perhitungan::where('alternatif_uuid', $alternatif->uuid)->first();
                 if (!$query) {
                     foreach ($kriterias as $kriteria) {
+                        if ($kriteria->is_favorit == 1) {
+                            $data2 = [
+                                'uuid' => Str::orderedUuid(),
+                                'alternatif_uuid' => $alternatif->uuid,
+                                'kriteria_uuid' => $kriteria->uuid,
+                                'bobot' => 0,
+                                'is_favorit' => 1
+                            ];
+                            Perhitungan::create($data2);
+                        }
                         $data = [
                             'uuid' => Str::orderedUuid(),
                             'alternatif_uuid' => $alternatif->uuid,
