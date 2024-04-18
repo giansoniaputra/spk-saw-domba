@@ -38,6 +38,11 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">LOGIN</h1>
                                     </div>
+                                    @if(session()->has('loginError'))
+                                    <div class="alert alert-danger alert-dismissible fade show py-1 px-2" role="alert" id="error">
+                                        <small>{{ session('loginError') }}</small>
+                                    </div>
+                                    @endif
                                     <form action="/authenticate" method="post" class="user">
                                         @csrf
                                         <div class="form-group">
