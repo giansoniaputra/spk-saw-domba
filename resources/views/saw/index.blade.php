@@ -85,13 +85,11 @@
                             $bobots = DB::table('perhitungans')
                             ->where('kriteria_uuid', $kriteria->uuid)
                             ->where('alternatif_uuid', $alternatif->uuid)
-                            ->where('is_favorit', 1)
                             ->get();
                             } else {
                             $bobots = DB::table('perhitungans')
                             ->where('kriteria_uuid', $kriteria->uuid)
                             ->where('alternatif_uuid', $alternatif->uuid)
-                            ->where('is_favorit', 0)
                             ->get();
                             }
                             @endphp

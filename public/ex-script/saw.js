@@ -113,6 +113,14 @@ $(document).ready(function () {
                 normalisasiElement.innerHTML = normalisasi
 
                 // PERANGKINGAN
+                // let hasil_ranking = ranking2(data.ranking)
+                // console.log(hasil_ranking);
+
+                // let rankTable = [];
+                // for (let i = 0; i < data.ranking.length; i++) {
+                //     rankTable.push([`A+${i + 1}`,])
+                // }
+
                 let ranking = `
                     <div class="row mt-3">
                         <div class="col-sm-12">
@@ -132,15 +140,28 @@ $(document).ready(function () {
                                         </thead>
                                         <tbody>
                                     `;
+                let bobot = 0;
+                rankPosition = 0;
                 data.ranking.forEach((a, b) => {
+                    if (a[1] == bobot) {
+                        var rank = rankPosition;
+                        rankPosition *= 0;
+                        rankPosition += rank;
+                    } else {
+                        var rank = rankPosition + 1;
+                        rankPosition *= 0;
+                        rankPosition += rank;
+                    }
                     ranking += `
                                         <tr>
                                             <td>A${a[2]}</td>
                                             <td>${a[0]}</td>
                                             <td>${a[1]}</td>
-                                            <td>${b + 1}</td>
+                                            <td>${rank}</td>
                                         </tr>
                                         `
+                    bobot *= 0;
+                    bobot += a[1];
                 })
 
                 ranking += `</tbody></table>`
@@ -200,4 +221,24 @@ $(document).ready(function () {
     function transpose(matrix) {
         return matrix[0].map((col, i) => matrix.map(row => row[i]));
     }
+
+    function ranking2(arrayAwal) {
+        // Buat salinan array awal untuk diurutkan
+        const sortedArray = [...arrayAwal].sort((a, b) => b - a);
+
+        // Buat objek untuk menetapkan peringkat ke setiap elemen dalam array
+        const peringkat = {};
+        let rank = 1;
+        sortedArray.forEach((value, index) => {
+            if (!(value in peringkat)) {
+                peringkat[value] = rank++;
+            }
+        });
+
+        // Buat array baru yang berisi peringkat dari setiap elemen dalam array awal
+        const arrayBaru = arrayAwal.map(value => peringkat[value]);
+
+        return arrayBaru;
+    }
+
 })

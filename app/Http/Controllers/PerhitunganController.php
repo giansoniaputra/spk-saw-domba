@@ -36,7 +36,6 @@ class PerhitunganController extends Controller
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
                     ->where('b.kelas', $request->kelas)
-                    ->where('a.is_favorit', 1)
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
@@ -51,7 +50,6 @@ class PerhitunganController extends Controller
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
                     ->where('b.kelas', $kelas)
-                    ->where('a.is_favorit', 0)
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
@@ -91,16 +89,6 @@ class PerhitunganController extends Controller
                         'bobot' => 0,
                         'is_favorit' => 0
                     ];
-                    if ($kriteria->is_favorit == 1) {
-                        $data2 = [
-                            'uuid' => Str::orderedUuid(),
-                            'alternatif_uuid' => $alternatif->uuid,
-                            'kriteria_uuid' => $kriteria->uuid,
-                            'bobot' => 0,
-                            'is_favorit' => 1
-                        ];
-                        Perhitungan::create($data2);
-                    }
                     Perhitungan::create($data);
                 }
             }
@@ -116,16 +104,6 @@ class PerhitunganController extends Controller
                 $query = Perhitungan::where('alternatif_uuid', $alternatif->uuid)->first();
                 if (!$query) {
                     foreach ($kriterias as $kriteria) {
-                        if ($kriteria->is_favorit == 1) {
-                            $data2 = [
-                                'uuid' => Str::orderedUuid(),
-                                'alternatif_uuid' => $alternatif->uuid,
-                                'kriteria_uuid' => $kriteria->uuid,
-                                'bobot' => 0,
-                                'is_favorit' => 1
-                            ];
-                            Perhitungan::create($data2);
-                        }
                         $data = [
                             'uuid' => Str::orderedUuid(),
                             'alternatif_uuid' => $alternatif->uuid,
@@ -148,16 +126,6 @@ class PerhitunganController extends Controller
                             'bobot' => 0
                         ];
                         Perhitungan::create($data);
-                        if ($kriteria->is_favorit == 1) {
-                            $data2 = [
-                                'uuid' => Str::orderedUuid(),
-                                'alternatif_uuid' => $alternatif->uuid,
-                                'kriteria_uuid' => $kriteria->uuid,
-                                'bobot' => 0,
-                                'is_favorit' => 1
-                            ];
-                            Perhitungan::create($data2);
-                        }
                     }
                 }
             }
@@ -184,7 +152,6 @@ class PerhitunganController extends Controller
                 'perhitungan' => DB::table('perhitungans as a')
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
-                    ->where('a.is_favorit', 1)
                     ->orderBy('b.alternatif', 'asc')->get(),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->where('is_favorit', 1)->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $request->kelas)->get(),
@@ -196,7 +163,6 @@ class PerhitunganController extends Controller
                 'perhitungan' => DB::table('perhitungans as a')
                     ->join('alternatifs as b', 'a.alternatif_uuid', '=', 'b.uuid')
                     ->select('a.*', 'b.alternatif', 'b.keterangan')
-                    ->where('a.is_favorit', 0)
                     ->orderBy('b.alternatif', 'asc'),
                 'kriterias' => Kriteria::orderBy('kode', 'asc')->get(),
                 'alternatifs' => Alternatif::orderBy('alternatif', 'asc')->where('kelas', $kelas)->get(),
@@ -213,13 +179,11 @@ class PerhitunganController extends Controller
                     $bobots = DB::table('perhitungans')
                         ->where('kriteria_uuid', $kriteria->uuid)
                         ->where('alternatif_uuid', $alternatif->uuid)
-                        ->where('is_favorit', 1)
                         ->get();
                 } else {
                     $bobots = DB::table('perhitungans')
                         ->where('kriteria_uuid', $kriteria->uuid)
                         ->where('alternatif_uuid', $alternatif->uuid)
-                        ->where('is_favorit', 0)
                         ->get();
                 }
                 if ($kriteria->atribut == "BENEFIT") {
