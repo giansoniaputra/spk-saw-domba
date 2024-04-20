@@ -75,7 +75,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 let data = response.data
-                console.log(data);
+                console.log(response.hasil_kali);
                 let rankingElement = document.querySelector('#ranking')
                 let juaraElement = document.querySelector('#juara')
                 let normalisasiElement = document.querySelector('#normalisasi');
@@ -132,16 +132,19 @@ $(document).ready(function () {
                                     <table id="table-perankingan" class="table table-bordered table-hover dtr-inline" style="overflow:scroll ">
                                         <thead>
                                             <tr>
+                                                <td>No Tanding</td>
                                                 <td>Alternatif</td>
-                                                <td>Keterangan</td>
-                                                <td>Bobot</td>
+                                                <td>Pemilik</td>
+                                                <td>Daerah</td>
+                                                <td>Kelas</td>
+                                                <td>Hasil</td>
                                                 <td>Ranking</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                     `;
                 let bobot = 0;
-                rankPosition = 0;
+                let rankPosition = 0;
                 data.ranking.forEach((a, b) => {
                     if (a[1] == bobot) {
                         var rank = rankPosition;
@@ -154,8 +157,11 @@ $(document).ready(function () {
                     }
                     ranking += `
                                         <tr>
-                                            <td>A${a[2]}</td>
+                                            <td>${a[3]}</td>
                                             <td>${a[0]}</td>
+                                            <td>${a[4]}</td>
+                                            <td>${a[5]}</td>
+                                            <td>${a[6]}</td>
                                             <td>${a[1]}</td>
                                             <td>${rank}</td>
                                         </tr>
@@ -178,36 +184,71 @@ $(document).ready(function () {
                                     <table id="table-perankingan" class="table table-bordered table-hover dtr-inline" style="overflow:scroll ">
                                         <thead>
                                             <tr>
-                                                <td>Alternatif</td>
-                                                <td>Keterangan</td>
-                                                <td>Bobot</td>
-                                                <td>Ranking</td>
+                                            <td>No Tanding</td>
+                                            <td>Alternatif</td>
+                                            <td>Pemilik</td>
+                                            <td>Daerah</td>
+                                            <td>Kelas</td>
+                                            <td>Hasil</td>
+                                            <td>Ranking</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                     `;
+                let bobot2 = 0;
+                let rankPosition2 = 0;
                 if (data.ranking.length < 6) {
+                    if (a[1] == bobot2) {
+                        var rank2 = rankPosition2;
+                        rankPosition2 *= 0;
+                        rankPosition2 += rank2;
+                    } else {
+                        var rank2 = rankPosition2 + 1;
+                        rankPosition2 *= 0;
+                        rankPosition2 += rank2;
+                    }
                     data.ranking.forEach((a, b) => {
                         juara += `
-                                        <tr>
-                                            <td>A${a[2]}</td>
-                                            <td>${a[0]}</td>
-                                            <td>${a[1]}</td>
-                                            <td>${b + 1}</td>
-                                        </tr>
+                        <tr>
+                        <td>${a[3]}</td>
+                        <td>${a[0]}</td>
+                        <td>${a[4]}</td>
+                        <td>${a[5]}</td>
+                        <td>${a[6]}</td>
+                        <td>${a[1]}</td>
+                        <td>${rank2}</td>
+                    </tr>
                                         `
+                        bobot2 *= 0;
+                        bobot2 += a[1];
                     })
                 } else {
+                    let bobot2 = 0;
+                    let rankPosition2 = 0;
                     let b = 1;
                     for (let i = 0; i < 6; i++) {
+                        if (data.ranking[i][1] == bobot2) {
+                            var rank2 = rankPosition2;
+                            rankPosition2 *= 0;
+                            rankPosition2 += rank2;
+                        } else {
+                            var rank2 = rankPosition2 + 1;
+                            rankPosition2 *= 0;
+                            rankPosition2 += rank2;
+                        }
                         juara += `
                                         <tr>
-                                            <td>A${data.ranking[i][2]}</td>
+                                            <td>${data.ranking[i][3]}</td>
                                             <td>${data.ranking[i][0]}</td>
+                                            <td>${data.ranking[i][4]}</td>
+                                            <td>${data.ranking[i][5]}</td>
+                                            <td>${data.ranking[i][6]}</td>
                                             <td>${data.ranking[i][1]}</td>
-                                            <td>${b++}</td>
+                                            <td>${rank2}</td>
                                         </tr>
                                         `
+                        bobot2 *= 0;
+                        bobot2 += data.ranking[i][1];
                     }
                 }
 

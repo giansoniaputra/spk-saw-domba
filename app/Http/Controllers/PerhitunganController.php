@@ -193,7 +193,7 @@ class PerhitunganController extends Controller
                     foreach ($bobots as $bobot) {
                         // $max = SubKriteria::where('kriteria_uuid', $kriteria->uuid)->orderBy('bobot', 'desc')->first();
                         // $bobot_kriteria = round($bobot->bobot / $max->bobot, 3);
-                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 3);
+                        $bobot_kriteria = round($bobot->bobot / $sum_kriteria, 6);
                         $elements .= "<td class=\"text-center\" id=\"nilai-bobot\">
                         <p class=\"p-bobot\">" . $bobot_kriteria . "</p>
                         <form action=\"javascript:;\" id=\"form-update-bobot\">
@@ -233,7 +233,7 @@ class PerhitunganController extends Controller
         $hasil_kali = [];
         for ($i = 0; $i < count($bobot_kriteria); $i++) {
             for ($j = 0; $j < count($bobot); $j++) {
-                $hasil_kali[] = floatval(number_format($bobot_kriteria[$i][$j] * $bobot[$j], 3));
+                $hasil_kali[] = round($bobot_kriteria[$i][$j] * $bobot[$j], 6);
             }
         }
 
@@ -243,7 +243,7 @@ class PerhitunganController extends Controller
         // Perkalian Semua Array
         $ranking = [];
         for ($u = 0; $u < count($pecah_hasil); $u++) {
-            $ranking[] = round(array_sum($pecah_hasil[$u]), 3);
+            $ranking[] = round(array_sum($pecah_hasil[$u]), 6);
         }
 
         //Merangking
@@ -254,24 +254,28 @@ class PerhitunganController extends Controller
         }
         $rangking_assoc = [];
         foreach ($ranking as $index => $nilai) {
-            $rangking_assoc[] = [$nama[$index]->keterangan, $nilai, $nama[$index]->alternatif];
+            $rangking_assoc[] = [$nama[$index]->keterangan, $nilai, $nama[$index]->alternatif, $nama[$index]->no_tanding, $nama[$index]->pemilik, $nama[$index]->daerah, $nama[$index]->kelas];
         }
 
         $names = array_column($rangking_assoc, 0);
         $scores = array_column($rangking_assoc, 1);
         $alternatifss = array_column($rangking_assoc, 2);
+        $no_tanding = array_column($rangking_assoc, 3);
+        $pemilik = array_column($rangking_assoc, 4);
+        $daerah = array_column($rangking_assoc, 5);
+        $kelass = array_column($rangking_assoc, 6);
 
         // Menggunakan array_multisort untuk mengurutkan scores secara menurun
-        array_multisort($scores, SORT_DESC, $names, $alternatifss);
+        array_multisort($scores, SORT_DESC, $names, $alternatifss, $no_tanding, $pemilik, $daerah, $kelass);
 
         // Menggabungkan kembali array setelah diurutkan
-        $final_ranking = array_map(function ($name, $score, $alternatifss) {
-            return [$name, $score, $alternatifss];
-        }, $names, $scores, $alternatifss);
+        $final_ranking = array_map(function ($name, $score, $alternatifss, $no_tanding, $pemilik, $daerah, $kelass) {
+            return [$name, $score, $alternatifss, $no_tanding, $pemilik, $daerah, $kelass];
+        }, $names, $scores, $alternatifss, $no_tanding, $pemilik, $daerah, $kelass);
 
         $data['ranking'] = $final_ranking;
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data, 'hasil_kali' => $pecah_hasil]);
     }
     public function normalisasi_waspas()
     {
